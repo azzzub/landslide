@@ -28,3 +28,4 @@ jobs:
           server: ftp.landslide.id
           username: ${{ secrets.username }}
           password: ${{ secrets.password }}
+          local-dir: ./prven/build/
