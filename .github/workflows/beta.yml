@@ -22,6 +22,8 @@ jobs:
           cd prven
           npm install
           npm run build
+        env:
+          REACT_APP_ENV: BETA
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.1.0

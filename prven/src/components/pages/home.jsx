@@ -1,4 +1,3 @@
-import Graph from "./home/graph";
 import Recap from "./home/recap";
 
 function Home() {
