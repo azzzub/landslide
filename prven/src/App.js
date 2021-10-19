@@ -1,25 +1,23 @@
-import logo from "./logo.svg";
-import "./App.css";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import EnvStatus from "./components/atoms/envStatus";
+import Header from "./components/header";
+import Account from "./components/pages/account";
+import Home from "./components/pages/home";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>landslide.id</h1>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="canvas">
+        <div className="paper">
+          <EnvStatus />
+          <Header />
+          <Switch>
+            <Route path="/akun">{<Account />}</Route>
+            <Route path="/">{<Home />}</Route>
+          </Switch>
+        </div>
+      </div>
+    </Router>
   );
 }
 
