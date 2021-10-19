@@ -4,7 +4,7 @@ import Widget from "../../atoms/widget";
 
 function Recap({ data }) {
   return (
-    <VStack padding="2" alignItems="start">
+    <VStack padding="2" alignItems="start" marginBottom="1">
       <Text fontSize="small">
         Data terakhir diperbarui pada: <b>{data?.latestUpdate || "datetime"}</b>
       </Text>
