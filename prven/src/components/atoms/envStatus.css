@@ -1,0 +1,11 @@
+.envStatus_container {
+  position: fixed;
+  top: 0;
+  font-size: smaller;
+  z-index: 999;
+  background-color: yellow;
+  font-weight: bold;
+  color: red;
+  padding: 1px 5px 1px 5px;
+  border-bottom-right-radius: 7px;
+}
