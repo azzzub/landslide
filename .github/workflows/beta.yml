@@ -33,14 +33,10 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v2
 
-      - name: 🔨 Lookup for the project
-        run: cd comft
-
-      - name: Composer PHP 7.4
-        uses: php-actions/composer@v6
-        with:
-          php_version: 7.4
-          command: ls && composer install
+      - name: 🔨 Installing dependencies
+        run: |
+          cd comft
+          composer install --prefer-dist
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
