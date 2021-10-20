@@ -40,6 +40,7 @@ jobs:
         uses: php-actions/composer@v6
         with:
           php_version: 7.4
+          command: ls && composer install
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
