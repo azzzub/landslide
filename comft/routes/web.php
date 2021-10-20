@@ -25,8 +25,31 @@ $router->get('/', function () {
     ];
 });
 
-$router->get('/data', function () {
-    $result = DB::select("SELECT * FROM sensor ORDER BY id ASC");
+$router->get('/data[/{time}]', function ($time = 'year') {
+    global $query;
+    switch ($time) {
+        case 'day':
+            $query = "SELECT * FROM sensor WHERE created_at >= NOW() - INTERVAL 1 DAY ORDER BY id ASC";
+            break;
+
+        case 'week':
+            $query = "SELECT * FROM sensor WHERE created_at >= NOW() - INTERVAL 7 DAY ORDER BY id ASC";
+            break;
+
+        case 'month':
+            $query = "SELECT * FROM sensor WHERE created_at >= NOW() - INTERVAL 30 DAY ORDER BY id ASC";
+            break;
+
+        case 'year':
+            $query = "SELECT * FROM sensor WHERE created_at >= NOW() - INTERVAL 1 YEAR ORDER BY id ASC";
+            break;
+
+        default:
+            $query = "SELECT * FROM sensor ORDER BY id ASC";
+            break;
+    }
+
+    $result = DB::select($query);
     $final_result = array();
     foreach ($result as $row) {
         array_push($final_result, [
