@@ -27,7 +27,7 @@ jobs:
   comft:
     name: 🎉 Comft Deploy
     needs: changes
-    if: ${{ needs.changes.outputs.comft == 'true' || secrets.COMFT_FORCE_BUILD == 'true' }}
+    if: ${{ needs.changes.outputs.comft == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: 🚚 Get latest code
@@ -51,7 +51,7 @@ jobs:
   prven:
     name: 🎉 Prven Deploy
     needs: changes
-    if: ${{ needs.changes.outputs.prven == 'true' || secrets.PRVEN_FORCE_BUILD == 'true' }}
+    if: ${{ needs.changes.outputs.prven == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: 🚚 Get latest code
