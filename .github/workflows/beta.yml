@@ -17,7 +17,7 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          base: HEAD
+          base: HEAD^
           filters: |
             comft:
               - 'comft/**'
