@@ -36,7 +36,7 @@ jobs:
       - name: 🔨 Installing dependencies
         run: |
           cd comft
-          composer install --prefer-dist
+          echo "🚨 Warning... You need to copy 'vendor' folder manualy 🚨"
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
@@ -45,6 +45,8 @@ jobs:
           username: ${{ secrets.username }}
           password: ${{ secrets.password }}
           local-dir: ./comft/
+          exclude: ./vendor/**
+          log-level: minimal
           server-dir: ./api-beta.landslide.id/
 
   prven:
