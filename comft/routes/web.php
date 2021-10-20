@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
+
+
 /**
  * Getting the API status
  */
