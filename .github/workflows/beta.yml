@@ -30,8 +30,25 @@ jobs:
     if: ${{ needs.changes.outputs.comft == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: run for 'comft' folder
-        run: echo "This job runs only when all the modified files are under the 'comft' folder."
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: 🔨 Lookup for the project
+        run: cd comft
+
+      - name: Composer PHP 7.4
+        uses: php-actions/composer@v6
+        with:
+          php_version: 7.4
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          server: ftp.landslide.id
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
+          local-dir: ./comft/
+          server-dir: ./api-beta.landslide.id/
 
   prven:
     name: 🎉 Prven Deploy
@@ -39,29 +56,27 @@ jobs:
     if: ${{ needs.changes.outputs.prven == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: run for 'prven' folder
-        run: echo "This job runs only when all the modified files are under the 'prven' folder."
-      # - name: 🚚 Get latest code
-      #   uses: actions/checkout@v2
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
 
-      # - name: Use Node.js 12
-      #   uses: actions/setup-node@v2-beta
-      #   with:
-      #     node-version: "12"
+      - name: Use Node.js 12
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "12"
 
-      # - name: 🔨 Build Project
-      #   run: |
-      #     cd prven
-      #     npm install
-      #     npm run build
-      #   env:
-      #     REACT_APP_ENV: BETA
+      - name: 🔨 Build Project
+        run: |
+          cd prven
+          npm install
+          npm run build
+        env:
+          REACT_APP_ENV: BETA
 
-      # - name: 📂 Sync files
-      #   uses: SamKirkland/FTP-Deploy-Action@4.0.0
-      #   with:
-      #     server: ftp.landslide.id
-      #     username: ${{ secrets.username }}
-      #     password: ${{ secrets.password }}
-      #     local-dir: ./prven/build/
-      #     server-dir: ./beta.landslide.id/
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          server: ftp.landslide.id
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
+          local-dir: ./prven/build/
+          server-dir: ./beta.landslide.id/
