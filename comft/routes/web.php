@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
-// TESTING PURPOSES
+// TESTING
 
 /**
  * Getting the API status
