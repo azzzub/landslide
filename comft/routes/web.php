@@ -16,7 +16,10 @@ use Illuminate\Support\Facades\DB;
 */
 
 $router->get('/', function () {
-    return;
+    return [
+        "status_code" => 200,
+        "message" => "OK"
+    ];
 });
 
 $router->get('/data', function () {
