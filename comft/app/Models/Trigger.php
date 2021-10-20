@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
+class Trigger extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
 
@@ -18,7 +18,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var string
      */
-    protected $table = 'user2';
+    protected $table = 'trigger';
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +26,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'email', 'password', 'role', 'token', 'token_exp',
+        's', 'e', 'x', 'y', 'active', 'time',
     ];
 
     /**
@@ -34,7 +34,5 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'token_exp',
-    ];
+    protected $hidden = [];
 }

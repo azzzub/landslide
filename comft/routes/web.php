@@ -2,6 +2,7 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 /*
@@ -25,6 +26,27 @@ $router->get('/', function () {
     ];
 });
 
+$router->post('/register', 'UserController@register');
+$router->post('/login', 'UserController@login');
+$router->post('/session', 'UserController@session');
+$router->get('/trigger', 'SettingController@getTrigger');
+$router->put('/trigger', 'SettingController@updateTrigger');
+
+/**
+ * PUBLIC API
+ */
+
+/**
+ * GET - /data[/time]
+ * Getting the sensor data based on the time
+ * 
+ * Time:
+ * 1. day
+ * 2. week
+ * 3. month
+ * 4. year
+ * 5. *empty* (all data)
+ */
 $router->get('/data[/{time}]', function ($time = 'year') {
     global $query;
     switch ($time) {
@@ -67,6 +89,10 @@ $router->get('/data[/{time}]', function ($time = 'year') {
     return $final_result;
 });
 
+/**
+ * GET - /latest_data
+ * Getting the sensor latest uploaded data
+ */
 $router->get('/latest_data', function () {
     $result = DB::selectOne("SELECT * FROM sensor WHERE id = (SELECT max(id) FROM sensor)");
     $final_result = [
@@ -83,6 +109,51 @@ $router->get('/latest_data', function () {
         ],
         "gyro_str" => "x: " . $result->x . "°; y: " . $result->y . "°",
         "created_at" => $result->created_at
+    ];
+
+    return json_encode($final_result);
+});
+
+/**
+ * POST - /v1/hw
+ * This endpoint only consume by the EWS, to upload the data
+ * 
+ * Body:
+ * 1. s - float
+ * 2. e - float
+ * 3. x - float
+ * 4. y - float
+ * 5. z - float
+ */
+$router->post('/v1/hw', function (Request $request) {
+    $result = DB::table("sensor")->insert([
+        "s" => $request->input('s'),
+        "e" => $request->input('e'),
+        "x" => $request->input('x'),
+        "y" => $request->input('y'),
+        "z" => $request->input('z'),
+        "created_at" => new DateTime(),
+        "updated_at" => new DateTime(),
+    ]);
+    if (!$result) return response()->json(["message" => "Gagal menambahkan data"], 500);
+
+    return response()->json(["message" => "Data berhasil ditambahkan"], 201);
+});
+
+/**
+ * GET - /v1/trg
+ * This endpoint only consume by the EWS, to process the trigger data
+ */
+$router->get('/v1/trg', function () {
+    $result = DB::selectOne("SELECT * FROM `trigger` WHERE id = 1");
+    $final_result = [
+        "id" => $result->id,
+        "s" => $result->s,
+        "e" => $result->e,
+        "x" => $result->x,
+        "y" => $result->y,
+        "allow" => $result->active,
+        "time" => $result->time
     ];
 
     return json_encode($final_result);
