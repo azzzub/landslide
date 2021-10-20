@@ -62,7 +62,7 @@ function Header({ title }) {
           </MenuGroup>
           <MenuDivider />
           <MenuGroup title="Pengaturan">
-            <Link to="/pengaturan/trigger">
+            <Link to="/trigger">
               <MenuItem>Trigger Alarm</MenuItem>
             </Link>
             <MenuItem>Kalibrasi Sensor</MenuItem>

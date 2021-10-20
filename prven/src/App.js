@@ -18,7 +18,7 @@ function App() {
               <Route path="/akun" exact>
                 {<Account />}
               </Route>
-              <Route path="/pengaturan/trigger" exact>
+              <Route path="/trigger" exact>
                 {<SettingTrigger />}
               </Route>
               <Route path="/" exact>
