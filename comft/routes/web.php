@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
+/**
+ * Getting the API status
+ */
 $router->get('/', function () {
     return [
         "status_code" => 200,

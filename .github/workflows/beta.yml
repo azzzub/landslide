@@ -5,81 +5,36 @@ on:
 
 name: 🚀 Beta Deployment
 jobs:
-  check_comft:
-    name: 🔎 Check comft files
-    outputs:
-      run_job: ${{ steps.check_files.outputs.run_job }}
+  # CI optimation, run on the changed file only
+  changes:
+    name: 🔎 Looking for changes
     runs-on: ubuntu-latest
+    outputs:
+      comft: ${{ steps.filter.outputs.comft }}
+      prven: ${{ steps.filter.outputs.prven }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: dorny/parth-filter@v2
+        id: filter
         with:
-          fetch-depth: 2
+          filters: |
+            comft:
+              - 'comft/**'
+            prven:
+              - 'prven/**'
 
-      - name: Check modified files
-        id: check_files
-        run: |
-          echo "=============== list modified files ==============="
-          git diff --name-only HEAD^ HEAD
-          
-          echo "========== check paths of modified files =========="
-          git diff --name-only HEAD^ HEAD > files.txt
-          while IFS= read -r file
-          do
-            echo $file
-            if [[ $file != comft/* ]]; then
-              echo "This modified file is not under the 'comft' folder."
-              echo "::set-output name=run_job::false"
-              break
-            else
-              echo "::set-output name=run_job::true"
-            fi
-          done < files.txt
-  
-  job_for_comft:
-    name: 🎉 API Deploy
-    needs: check_comft
-    if: needs.check_comft.outputs.run_job == 'true'
+  comft:
+    name: 🎉 Comft Deploy
+    needs: changes
+    if: ${{ needs.changes.outputs.comft == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: run for 'comft' folder
         run: echo "This job runs only when all the modified files are under the 'comft' folder."
-     
-  check_prven:
-    name: 🔎 Check prven files
-    outputs:
-      run_job: ${{ steps.check_files.outputs.run_job }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
 
-      - name: Check modified files
-        id: check_files
-        run: |
-          echo "=============== list modified files ==============="
-          git diff --name-only HEAD^ HEAD
-          
-          echo "========== check paths of modified files =========="
-          git diff --name-only HEAD^ HEAD > files.txt
-          while IFS= read -r file
-          do
-            echo $file
-            if [[ $file != prven/* ]]; then
-              echo "This modified file is not under the 'prven' folder."
-              echo "::set-output name=run_job::false"
-              break
-            else
-              echo "::set-output name=run_job::true"
-            fi
-          done < files.txt
-
-  job_for_prven:
-    name: 🎉 Web Deploy
-    needs: check_prven
-    if: needs.check_prven.outputs.run_job == 'true'
+  prven:
+    name: 🎉 Prven Deploy
+    needs: changes
+    if: ${{ needs.changes.outputs.prven == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: run for 'prven' folder
