@@ -27,7 +27,7 @@ jobs:
   comft:
     name: 🎉 Comft Deploy
     needs: changes
-    if: ${{ needs.changes.outputs.comft == 'true' }}
+    if: ${{ needs.changes.outputs.comft == 'true' || secrets.COMFT_FORCE_BUILD == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: 🚚 Get latest code
@@ -37,6 +37,7 @@ jobs:
         run: |
           cd comft
           composer install --prefer-dist
+          php artisan migrate
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
@@ -50,7 +51,7 @@ jobs:
   prven:
     name: 🎉 Prven Deploy
     needs: changes
-    if: ${{ needs.changes.outputs.prven == 'true' }}
+    if: ${{ needs.changes.outputs.prven == 'true' || secrets.PRVEN_FORCE_BUILD == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: 🚚 Get latest code
