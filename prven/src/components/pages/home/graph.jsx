@@ -1,17 +1,24 @@
 import { Button } from "@chakra-ui/button";
 import { HStack } from "@chakra-ui/layout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Chart from "../../atoms/chart";
-import axios from "axios";
 import "./graph.css";
 
 function Graph() {
-  const [data, setData] = useState([
-    {
-      x: 1,
-      y: 2,
-    },
-  ]);
+  const dummy1 = [
+    { x: 1, y: 2 },
+    { x: 2, y: 4 },
+    { x: 3, y: 5 },
+    { x: 4, y: 3 },
+    { x: 5, y: 2 },
+  ];
+  const dummy2 = [
+    { x: 1, y: 4 },
+    { x: 2, y: 5 },
+    { x: 3, y: 2 },
+    { x: 4, y: 1 },
+    { x: 5, y: 3 },
+  ];
   const [filterActive, setFilterActive] = useState(4);
   const filter = [
     { id: 1, title: "Hari" },
@@ -19,19 +26,6 @@ function Graph() {
     { id: 3, title: "Bulan" },
     { id: 4, title: "Tahun" },
   ];
-
-  async function fetchData() {
-    try {
-      const result = await axios.get(process.env.REACT_APP_ENDPOINT + "/data");
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   return (
     <div className="graph_container">
       <HStack paddingBottom="1">
@@ -47,9 +41,9 @@ function Graph() {
           </Button>
         ))}
       </HStack>
-      <Chart title="Kelembaban Tanah" suffix="%" data1={data} />
-      <Chart title="Ekstensometer" suffix=" cm" data1={data} />
-      <Chart title="Gyroscope" suffix="°" data1={data} data2={data} />
+      <Chart title="Kelembaban Tanah" suffix="%" data1={dummy1} />
+      <Chart title="Ekstensometer" suffix=" cm" data1={dummy1} />
+      <Chart title="Gyroscope" suffix="°" data1={dummy1} data2={dummy2} />
     </div>
   );
 }

@@ -2,7 +2,7 @@
   position: fixed;
   top: 0;
   font-size: smaller;
-  z-index: 99999;
+  z-index: 999;
   background-color: yellow;
   font-weight: bold;
   color: red;
