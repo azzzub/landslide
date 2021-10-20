@@ -13,6 +13,7 @@ jobs:
       comft: ${{ steps.filter.outputs.comft }}
       prven: ${{ steps.filter.outputs.prven }}
     steps:
+      - uses: actions/checkout@v2
       - uses: dorny/paths-filter@v2
         id: filter
         with:
