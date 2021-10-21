@@ -10,7 +10,7 @@ jobs:
     name: 🔎 Looking for changes
     runs-on: ubuntu-latest
     outputs:
-      comft: ${{ steps.filter.outputs.comft }}
+      filtr: ${{ steps.filter.outputs.filtr }}
       prven: ${{ steps.filter.outputs.prven }}
     steps:
       - uses: actions/checkout@v2
@@ -19,15 +19,15 @@ jobs:
         with:
           base: beta
           filters: |
-            comft:
-              - 'comft/**'
+            filtr:
+              - 'filtr/**'
             prven:
               - 'prven/**'
 
-  comft:
-    name: 🎉 Comft Deploy
+  filtr:
+    name: 🎉 Filtr Deploy
     needs: changes
-    if: ${{ needs.changes.outputs.comft == 'true' }}
+    if: ${{ needs.changes.outputs.filtr == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: 🚚 Get latest code
@@ -35,7 +35,7 @@ jobs:
 
       - name: 🔨 Installing dependencies
         run: |
-          cd comft
+          cd filtr
           echo "🚨 Warning... You need to copy 'vendor' folder manualy 🚨"
 
       - name: 📂 Sync files
@@ -44,7 +44,7 @@ jobs:
           server: ftp.landslide.id
           username: ${{ secrets.username }}
           password: ${{ secrets.password }}
-          local-dir: ./comft/
+          local-dir: ./filtr/
           exclude: ./vendor/**
           log-level: minimal
           server-dir: ./api-beta.landslide.id/
