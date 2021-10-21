@@ -6,11 +6,11 @@ import "./graph.css";
 
 function Graph() {
   const dummy1 = [
-    { x: 1, y: 2 },
-    { x: 2, y: 4 },
-    { x: 3, y: 5 },
-    { x: 4, y: 3 },
-    { x: 5, y: 2 },
+    { x: 1, y: 2, c_at: "12" },
+    { x: 2, y: 4, c_at: "13" },
+    { x: 3, y: 5, c_at: "14" },
+    { x: 4, y: 3, c_at: "15" },
+    { x: 5, y: 2, c_at: "16" },
   ];
   const dummy2 = [
     { x: 1, y: 4 },

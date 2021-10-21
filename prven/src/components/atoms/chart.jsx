@@ -10,18 +10,23 @@ function Chart({ title, suffix, data1, data2 }) {
     exportEnabled: true,
     theme: "light2",
     height: 200,
+    toolTip: {
+      shared: true,
+    },
     axisY: {
       suffix: suffix || "",
     },
     data: [
       {
         type: "line",
+        markerType: "none",
         color: "#ff9965",
-        toolTipContent: `Waktu {x}: {y}${suffix || ""}`,
+        toolTipContent: `Waktu {x}: {y}${suffix || ""} {c_at}`,
         dataPoints: data1,
       },
       {
         type: "line",
+        markerType: "none",
         color: "#8cd47e",
         toolTipContent: `Waktu {x}: y {y}${suffix || ""}`,
         dataPoints: data2,

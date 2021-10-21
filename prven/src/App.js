@@ -5,8 +5,18 @@ import NotFound from "./components/pages/404";
 import Account from "./components/pages/account";
 import Home from "./components/pages/home";
 import SettingTrigger from "./components/pages/settings/trigger";
+import axios from "axios";
+import { useEffect } from "react";
 
 function App() {
+  // async function fetchSession() {
+  //   try {
+  //     await fetch("https://filtr.landslide.id/public/v1/data");
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+  // useEffect(() => fetchSession(), []);
   return (
     <Router>
       <div className="canvas">

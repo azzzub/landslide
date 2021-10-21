@@ -3,8 +3,12 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
 import { ChakraProvider } from "@chakra-ui/react";
+import axios from "axios";
+
+axios.get("http://api-beta.landslide.id/sanctum/csrf-cookie", {
+  withCredentials: true,
+});
 
 ReactDOM.render(
   <React.StrictMode>
