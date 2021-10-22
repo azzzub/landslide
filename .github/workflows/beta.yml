@@ -1,0 +1,81 @@
+on:
+  push:
+    branches:
+      - beta
+
+name: 🚀 Beta Deployment
+jobs:
+  # CI optimation, run on the changed file only
+  changes:
+    name: 🔎 Looking for changes
+    runs-on: ubuntu-latest
+    outputs:
+      filtr: ${{ steps.filter.outputs.filtr }}
+      prven: ${{ steps.filter.outputs.prven }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          base: beta
+          filters: |
+            filtr:
+              - 'filtr/**'
+            prven:
+              - 'prven/**'
+
+  filtr:
+    name: 🎉 Filtr Deploy
+    needs: changes
+    if: ${{ needs.changes.outputs.filtr == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: 🔨 Installing dependencies
+        run: |
+          cd filtr
+          echo "🚨 Warning... You need to copy 'vendor' folder manualy 🚨"
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          server: ftp.landslide.id
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
+          local-dir: ./filtr/
+          exclude: ./vendor/**
+          log-level: minimal
+          server-dir: ./api-beta.landslide.id/
+
+  prven:
+    name: 🎉 Prven Deploy
+    needs: changes
+    if: ${{ needs.changes.outputs.prven == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 12
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "12"
+
+      - name: 🔨 Build Project
+        run: |
+          cd prven
+          npm install
+          npm run build
+        env:
+          REACT_APP_ENV: BETA
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          server: ftp.landslide.id
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
+          local-dir: ./prven/build/
+          server-dir: ./beta.landslide.id/
