@@ -76,4 +76,4 @@ jobs:
           username: ${{ secrets.username }}
           password: ${{ secrets.password }}
           local-dir: ./prven/build/
-          server-dir: ./landslide.id/
+          server-dir: ./public_html/
