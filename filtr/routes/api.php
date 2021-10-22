@@ -35,7 +35,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/trigger', function () {
         $trigger = Trigger::where('id', 1)->first();
-        return $trigger;
+        return response()->json($trigger)->setEncodingOptions(JSON_NUMERIC_CHECK);
     });
 
     Route::put('/trigger', function (Request $request) {
@@ -128,7 +128,7 @@ Route::get('/data/{time?}', function ($time = 'year') {
             "created_at" => $row->created_at,
         ]);
     }
-    return $final_result;
+    return response()->json($final_result)->setEncodingOptions(JSON_NUMERIC_CHECK);
 });
 
 /**
@@ -193,7 +193,8 @@ Route::get('/data4graph/{time?}', function ($time = 'year') {
             "time" => $row->created_at,
         ]);
     }
-    return [
+    
+    $final_result = [
         "soil" => $soil,
         "extenso" => $extenso,
         "gyro" => [
@@ -201,6 +202,8 @@ Route::get('/data4graph/{time?}', function ($time = 'year') {
             "y" => $gyroY,
         ]
     ];
+    
+    return response()->json($final_result)->setEncodingOptions(JSON_NUMERIC_CHECK);
 });
 
 /**
