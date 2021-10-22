@@ -28,7 +28,7 @@ function Chart({ title, suffix, data1, data2 }) {
         type: "line",
         markerType: "none",
         color: "#8cd47e",
-        toolTipContent: `Waktu {x}: y {y}${suffix || ""}`,
+        toolTipContent: `Gyro y: {y}${suffix || ""}`,
         dataPoints: data2,
       },
     ],
