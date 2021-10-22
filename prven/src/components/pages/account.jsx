@@ -1,4 +1,4 @@
-import { Avatar, Text, Tooltip } from "@chakra-ui/react";
+import { Avatar, Text } from "@chakra-ui/react";
 import "./account.css";
 
 function planStatus(planId) {
@@ -16,15 +16,13 @@ function Account({ email, plan }) {
       <Avatar
         size="xl"
         bg="#ffb54c"
-        name={email || "email@landslide.id"}
+        name={email || "admin@landslide.id"}
         marginBottom="2"
       />
       <Text fontSize="lg" fontWeight="semibold">
-        {email || "email@landslide.id"}
+        {email || "admin@landslide.id"}
       </Text>
-      <Tooltip label="Hey, I'm here!" aria-label="A tooltip">
-        <div className="account_type">{planStatus(plan || 0)}</div>
-      </Tooltip>
+      <div className="account_type">{planStatus(plan || 0)}</div>
     </div>
   );
 }

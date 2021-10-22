@@ -3,8 +3,14 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
 import { ChakraProvider } from "@chakra-ui/react";
+import axios from "axios";
+import endpoint from "./helper/endpoint";
+
+axios.defaults.withCredentials = true;
+axios.get(endpoint("/sanctum/csrf-cookie"), {
+  withCredentials: true,
+});
 
 ReactDOM.render(
   <React.StrictMode>
