@@ -21,7 +21,7 @@ function Chart({ title, suffix, data1, data2 }) {
         type: "line",
         markerType: "none",
         color: "#ff9965",
-        toolTipContent: `Waktu {x}: {y}${suffix || ""} {c_at}`,
+        toolTipContent: `Waktu {time}: {y}${suffix || ""}`,
         dataPoints: data1,
       },
       {
@@ -33,9 +33,10 @@ function Chart({ title, suffix, data1, data2 }) {
       },
     ],
   };
+
   return (
     <div>
-      <div className="chart_title">{title || "Chart Title"}</div>
+      <div className="chart_title">{title || "..."}</div>
       <CanvasJSChart options={options} />
     </div>
   );

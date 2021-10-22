@@ -1,22 +1,14 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import EnvStatus from "./components/atoms/envStatus";
 import Header from "./components/header";
+import Logout from "./components/logout";
 import NotFound from "./components/pages/404";
 import Account from "./components/pages/account";
 import Home from "./components/pages/home";
-import SettingTrigger from "./components/pages/settings/trigger";
-import axios from "axios";
-import { useEffect } from "react";
+import Login from "./components/pages/login";
+import Trigger from "./components/pages/trigger";
 
 function App() {
-  // async function fetchSession() {
-  //   try {
-  //     await fetch("https://filtr.landslide.id/public/v1/data");
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-  // useEffect(() => fetchSession(), []);
   return (
     <Router>
       <div className="canvas">
@@ -25,11 +17,17 @@ function App() {
           <Header />
           <main className="main">
             <Switch>
+              <Route path="/masuk" exact>
+                {<Login />}
+              </Route>
               <Route path="/akun" exact>
                 {<Account />}
               </Route>
-              <Route path="/pengaturan/trigger" exact>
-                {<SettingTrigger />}
+              <Route path="/trigger" exact>
+                {<Trigger />}
+              </Route>
+              <Route path="/keluar" exact>
+                {<Logout />}
               </Route>
               <Route path="/" exact>
                 {<Home />}

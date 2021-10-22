@@ -5,8 +5,10 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";
 import axios from "axios";
+import endpoint from "./helper/endpoint";
 
-axios.get("http://api-beta.landslide.id/sanctum/csrf-cookie", {
+axios.defaults.withCredentials = true;
+axios.get(endpoint("/sanctum/csrf-cookie"), {
   withCredentials: true,
 });
 
