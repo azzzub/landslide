@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Sensor;
 use App\Models\Trigger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -56,6 +57,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         $extenso = $request->input('extenso');
         $gyroX = $request->input('gyro_x');
         $gyroY = $request->input('gyro_y');
+        $waterLevel = $request->input('waterlevel');
         $active = $request->input('active');
         $time = $request->input('time');
 
@@ -66,6 +68,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
             'e' => $extenso,
             'x' => $gyroX,
             'y' => $gyroY,
+            'wl' => is_null($waterLevel) ? 999 : $waterLevel,
             'active' => $active,
             'time' => $time,
         ]);
@@ -125,6 +128,7 @@ Route::get('/data/{time?}', function ($time = 'year') {
                 "x" => $row->x,
                 "y" => $row->y
             ],
+            "waterlevel" => $row->wl,
             "created_at" => $row->created_at,
         ]);
     }
@@ -171,6 +175,7 @@ Route::get('/data4graph/{time?}', function ($time = 'year') {
     $extenso = array();
     $gyroX = array();
     $gyroY = array();
+    $waterLevel = array();
     foreach ($result as $row) {
         array_push($soil, [
             "x" => $row->id,
@@ -192,17 +197,23 @@ Route::get('/data4graph/{time?}', function ($time = 'year') {
             "y" => $row->y,
             "time" => $row->created_at,
         ]);
+        array_push($waterLevel, [
+            "x" => $row->id,
+            "y" => $row->wl,
+            "time" => $row->created_at,
+        ]);
     }
-    
+
     $final_result = [
         "soil" => $soil,
         "extenso" => $extenso,
         "gyro" => [
             "x" => $gyroX,
             "y" => $gyroY,
-        ]
+        ],
+        "waterlevel" => $waterLevel
     ];
-    
+
     return response()->json($final_result)->setEncodingOptions(JSON_NUMERIC_CHECK);
 });
 
@@ -225,6 +236,8 @@ Route::get('/latest_data', function () {
             "y_str" => $result->y . "°",
         ],
         "gyro_str" => "x: " . $result->x . "°; y: " . $result->y . "°",
+        "waterlevel" => $result->wl,
+        "waterlevel_str" => $result->wl . " cm",
         "created_at" => $result->created_at
     ];
 
@@ -241,16 +254,16 @@ Route::get('/latest_data', function () {
  * 3. x - float
  * 4. y - float
  * 5. z - float
+ * 6. wl - float (default = 0)
  */
 Route::post('/v1/hw', function (Request $request) {
-    $result = DB::table("sensor")->insert([
+    $result = Sensor::create([
         "s" => $request->input('s'),
         "e" => $request->input('e'),
         "x" => $request->input('x'),
         "y" => $request->input('y'),
         "z" => $request->input('z'),
-        "created_at" => new DateTime(),
-        "updated_at" => new DateTime(),
+        "wl" => is_null($request->input('wl')) ? 0 : $request->input('wl'),
     ]);
     if (!$result) return response()->json(["message" => "Gagal menambahkan data"], 500);
 
@@ -269,6 +282,7 @@ Route::get('/v1/trg', function () {
         "e" => $result->e,
         "x" => $result->x,
         "y" => $result->y,
+        "wl" => $result->wl,
         "allow" => $result->active,
         "time" => $result->time
     ];
