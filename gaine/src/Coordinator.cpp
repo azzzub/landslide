@@ -16,7 +16,8 @@
 #define X_EEP_ADDR 80
 #define Y_EEP_ADDR 120
 #define A_EEP_ADDR 160
-#define T_EEP_ADDR 200
+#define T_EEP_ADDR 170
+#define WL_EEP_ADDR 210
 
 // #define MANUAL
 
@@ -88,6 +89,7 @@ float xEep = 999.0;
 float yEep = 999.0;
 int aEep = 0;
 int tEep = 30;
+float wlEep = 999.0;
 
 void coorSetup()
 {
@@ -150,14 +152,14 @@ byte length1 = 0x00;
 byte length2 = 0x00;
 byte _lengthRx = 0x00;
 byte rx[40] = {};
-float s, e, x, y;
+float s, e, x, y, wl;
 
 void coorRead()
 {
     receiveData();
     if (aEep != 0)
     {
-        if (s > sEep && e > eEep && x > xEep)
+        if (s > sEep && e > eEep && x > xEep && y > yEep && wl < wlEep)
         {
             digitalWrite(SIREN, LOW);
             delay(tEep * 1000);
@@ -243,6 +245,7 @@ void receiveData()
             float _e_temp = doc["e"];
             float _x_temp = doc["x"];
             float _y_temp = doc["y"];
+            float _wl_temp = doc["wl"];
 
             if (_x_temp == IMP_NUM && _y_temp == IMP_NUM)
             {
@@ -253,6 +256,7 @@ void receiveData()
             {
                 x = _x_temp;
                 y = _y_temp;
+                wl = _wl_temp;
             }
 
             DynamicJsonDocument docPost(100);
@@ -261,10 +265,11 @@ void receiveData()
             docPost["x"] = x;
             docPost["y"] = y;
             docPost["z"] = 0;
+            docPost["wl"] = wl;
             String postData;
             serializeJson(docPost, postData);
 
-            if (x != IMP_NUM && y != IMP_NUM && s != IMP_NUM && e != IMP_NUM)
+            if (x != IMP_NUM && y != IMP_NUM && s != IMP_NUM && e != IMP_NUM && wl != IMP_NUM)
             {
                 if (abs(millis() - currentMillis) >= 30000)
                 {
@@ -316,6 +321,7 @@ void receiveData()
                     e = IMP_NUM;
                     x = IMP_NUM;
                     y = IMP_NUM;
+                    wl = IMP_NUM;
 
                     getTrigger();
 
@@ -387,6 +393,7 @@ void getTrigger()
         float y = doc["y"];
         int allow = doc["allow"];
         int time = doc["time"];
+        float wl = doc["wl"];
         LOG_PRINTLN(body);
         EEPROM.put(S_EEP_ADDR, s);
         EEPROM.put(E_EEP_ADDR, e);
@@ -394,6 +401,7 @@ void getTrigger()
         EEPROM.put(Y_EEP_ADDR, y);
         EEPROM.put(A_EEP_ADDR, allow);
         EEPROM.put(T_EEP_ADDR, time);
+        EEPROM.put(WL_EEP_ADDR, wl);
         digitalWrite(BUZZ, HIGH);
         delay(100);
         digitalWrite(BUZZ, LOW);
@@ -407,12 +415,14 @@ void getTrigger()
         yEep = EEPROM.get(Y_EEP_ADDR, yEep);
         aEep = EEPROM.get(A_EEP_ADDR, aEep);
         tEep = EEPROM.get(T_EEP_ADDR, tEep);
+        wlEep = EEPROM.get(WL_EEP_ADDR, wlEep);
         LOG_PRINTLN(sEep);
         LOG_PRINTLN(eEep);
         LOG_PRINTLN(xEep);
         LOG_PRINTLN(yEep);
         LOG_PRINTLN(aEep);
         LOG_PRINTLN(tEep);
+        LOG_PRINTLN(wlEep);
     }
 
     // Shutdown
