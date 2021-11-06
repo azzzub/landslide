@@ -8,7 +8,7 @@ function Recap({ data, isLoading }) {
     <VStack padding="2" alignItems="start" marginBottom="1">
       <HStack width="100%" justifyContent="space-between">
         <Text fontSize="small">
-          Data terakhir diperbarui pada: <b>{data?.created_at || "..."}</b>
+          Data diperbarui pada: <b>{data?.created_at || "..."}</b>
         </Text>
         <CircularProgress
           isIndeterminate
