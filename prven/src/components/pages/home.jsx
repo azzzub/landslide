@@ -12,6 +12,7 @@ function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   async function fetchRecapData() {
+    setIsLoading(true);
     try {
       const response = await axios.get(endpoint("/latest_data"), {
         timeout: 5000,
@@ -31,7 +32,7 @@ function Home() {
 
   useInterval(() => {
     fetchRecapData();
-  }, 60000);
+  }, 30000);
 
   useEffect(() => {
     fetchRecapData();
