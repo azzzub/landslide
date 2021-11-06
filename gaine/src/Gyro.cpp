@@ -32,8 +32,12 @@ SoftwareSerial XBeeSerial(XBEE_RX, XBEE_TX);
 #define LOG_PRINTLNT(x, t)
 #endif
 
+#define TRIG 12 //Module pins
+#define ECHO 11
+
 void sendData(String);
 void receiveData(void);
+long readWaterLevel(void);
 
 byte counter = -1;
 byte length1 = 0x00;
@@ -55,12 +59,18 @@ void gyroSetup()
     Wire.write(0);
     Wire.endTransmission(true);
     // accelgyro.initialize();
+
+    pinMode(TRIG, OUTPUT); // Initializing Trigger Output and Echo Input
+    pinMode(ECHO, INPUT_PULLUP);
 }
 
-float xa, ya, za, roll, pitch;
+float xa, ya, za, roll, pitch, wl;
+long waterLevelCounter = 0;
+int distanceCounter = 0;
 
 void gyroLoop()
 {
+    wl = readWaterLevel();
     Wire.beginTransmission(MPU); //read the sensor data
     Wire.write(0x3B);
     Wire.endTransmission(false);
@@ -73,29 +83,35 @@ void gyroLoop()
     roll = atan2(ya, za) * 180.0 / PI;
     pitch = atan2(-xa, sqrt(ya * ya + za * za)) * 180.0 / PI;
 
-    Serial.print("roll = ");
-    Serial.print(roll, 1);
-    Serial.print(", pitch = ");
-    Serial.println(pitch, 1);
-    sendData("{\"x\":" + String(roll, 1) + ",\"y\":" + String(pitch, 1) + ",\"z\":" + String(0) + "}");
-    delay(1000);
+    sendData("{\"x\":" + String(roll, 1) + ",\"y\":" + String(pitch, 1) + ",\"wl\":" + String(wl, 1) + ",\"z\":" + String(0) + "}");
+    Serial.println("{\"x\":" + String(roll, 1) + ",\"y\":" + String(pitch, 1) + ",\"wl\":" + String(wl, 1) + ",\"z\":" + String(0) + "}");
 }
 
-// void gyroLoop()
-// {
-//     // accelgyro.getRotation(&gx, &gy, &gz);
-//     accelgyro.
-//         // accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-//         Serial.print("a/g:\t");
-//     Serial.print(gx);
-//     Serial.print("\t");
-//     Serial.print(gy);
-//     Serial.print("\t");
-//     Serial.println(gz);
+long readWaterLevel()
+{
+    waterLevelCounter = 0;
+    distanceCounter = 0;
+    for (int i = 0; i < 45; i++)
+    {
+        digitalWrite(TRIG, LOW); // Set the trigger pin to low for 2uS
+        delayMicroseconds(2);
 
-//     sendData("{\"x\":" + String(ax) + ",\"y\":" + String(ay) + ",\"z\":" + String(az) + "}");
-//     delay(1000);
-// }
+        digitalWrite(TRIG, HIGH); // Send a 10uS high to trigger ranging
+        delayMicroseconds(20);
+
+        digitalWrite(TRIG, LOW);                   // Send pin low again
+        int distance = pulseIn(ECHO, HIGH, 26000); // Read in times pulse
+
+        distance = distance / 58; //Convert the pulse duration to distance
+
+        if (distance != 0)
+        {
+            waterLevelCounter += distance;
+            distanceCounter++;
+        }
+    }
+    return waterLevelCounter / distanceCounter;
+}
 
 void sendData(String data)
 {
