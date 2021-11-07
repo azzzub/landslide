@@ -52,6 +52,7 @@ function Login() {
     if (cookies.get("access_token")) {
       history.push("/");
     }
+    return cookies;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
