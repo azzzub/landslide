@@ -305,8 +305,8 @@ function Trigger() {
                 min={-500}
                 max={500}
                 defaultValue={0}
-                precision={2}
-                step={0.5}
+                // precision={2}
+                // step={0.5}
                 value={gyroX}
                 onChange={(_, value) => setGyroX(value)}
                 isDisabled={ignoreCheckbox[3]}
@@ -343,8 +343,8 @@ function Trigger() {
                 min={-500}
                 max={500}
                 defaultValue={0.0}
-                precision={2}
-                step={0.5}
+                // precision={2}
+                // step={0.5}
                 value={gyroY}
                 onChange={(_, value) => setGyroY(value)}
                 isDisabled={ignoreCheckbox[4]}
