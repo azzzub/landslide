@@ -45,6 +45,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
             'extenso' => 'required|numeric',
             'gyro_x' => 'required|numeric',
             'gyro_y' => 'required|numeric',
+            'waterlevel' => 'required|numeric',
             'time' => 'required|numeric',
             'active' => 'required|boolean',
         ]);
