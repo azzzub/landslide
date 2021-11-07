@@ -21,6 +21,7 @@ function Recap({ data, isLoading }) {
         <Widget title="Kelembaban Tanah" value={data?.soil_str || "..."} />
         <Widget title="Ekstensometer" value={data?.extenso_str || "..."} />
       </HStack>
+      <Widget title="Water Level" value={data?.waterlevel_str || "..."} />
       <Widget title="Gyroscope" value={data?.gyro_str || "..."} />
     </VStack>
   );
