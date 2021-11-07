@@ -72,6 +72,11 @@ function Graph() {
         data1={graphData?.extenso || []}
       />
       <Chart
+        title="Water Level"
+        suffix=" cm"
+        data1={graphData?.waterlevel || []}
+      />
+      <Chart
         title="Gyroscope"
         suffix="°"
         data1={graphData?.gyro?.x || []}
