@@ -23,8 +23,9 @@ const cookies = new Cookies();
 function Trigger() {
   const toast = useToast();
   const history = useHistory();
-  const [soil, setSoil] = useState("");
-  const [extenso, setExtenso] = useState("");
+  const [soil, setSoil] = useState(0);
+  const [extenso, setExtenso] = useState(0);
+  const [waterlevel, setWaterlevel] = useState(0);
   const [gyroX, setGyroX] = useState(0);
   const [gyroY, setGyroY] = useState(0);
   const [time, setTime] = useState(0);
@@ -41,6 +42,7 @@ function Trigger() {
           extenso,
           gyro_x: gyroX,
           gyro_y: gyroY,
+          waterlevel,
           time,
           active,
         },
@@ -81,12 +83,13 @@ function Trigger() {
         },
       });
 
-      const { active, time, s, e, x, y } = response.data;
+      const { active, time, s, e, x, y, wl } = response.data;
 
       setActive(active);
       setTime(time);
       setSoil(s);
       setExtenso(e);
+      setWaterlevel(wl);
       setGyroX(x);
       setGyroY(y);
 
@@ -159,6 +162,23 @@ function Trigger() {
               step={0.5}
               value={extenso}
               onChange={(_, value) => setExtenso(value)}
+            >
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </FormControl>
+          <FormControl id="waterlevel" isRequired marginTop="2">
+            <FormLabel>Water Level (cm)</FormLabel>
+            <NumberInput
+              defaultValue={0}
+              min={0}
+              precision={2}
+              step={0.5}
+              value={waterlevel}
+              onChange={(_, value) => setWaterlevel(value)}
             >
               <NumberInputField />
               <NumberInputStepper>
