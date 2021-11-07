@@ -1,5 +1,6 @@
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { Checkbox } from "@chakra-ui/react";
 import { HStack, Stack } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
@@ -16,7 +17,9 @@ import {
   NumberInputStepper,
 } from "@chakra-ui/number-input";
 import { Switch } from "@chakra-ui/switch";
-import { CircularProgress } from "@chakra-ui/progress";
+import { InputGroup, InputLeftAddon } from "@chakra-ui/input";
+import { Alert, AlertIcon } from "@chakra-ui/alert";
+import Loading from "../atoms/loading";
 
 const cookies = new Cookies();
 
@@ -30,6 +33,13 @@ function Trigger() {
   const [gyroY, setGyroY] = useState(0);
   const [time, setTime] = useState(0);
   const [active, setActive] = useState(false);
+  const [ignoreCheckbox, setIgnoreCheckbox] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
   const [isLoading, setIsLoading] = useState(true);
 
   async function putTrigger() {
@@ -54,7 +64,7 @@ function Trigger() {
         }
       );
 
-      setIsLoading(false);
+      await fetchTrigger();
 
       toast({
         position: "bottom",
@@ -93,6 +103,25 @@ function Trigger() {
       setGyroX(x);
       setGyroY(y);
 
+      let _ignore = [...ignoreCheckbox];
+      if (s === 0) {
+        _ignore[0] = true;
+      }
+      if (e === 0) {
+        _ignore[1] = true;
+      }
+      if (wl === 999) {
+        _ignore[2] = true;
+      }
+      if (x === -500) {
+        _ignore[3] = true;
+      }
+      if (y === -500) {
+        _ignore[4] = true;
+      }
+
+      setIgnoreCheckbox(_ignore);
+
       setIsLoading(false);
     } catch (error) {
       if (error.response?.status === 401) {
@@ -114,21 +143,26 @@ function Trigger() {
   }, []);
 
   return (
-    <Stack>
-      <Stack
-        width="100%"
-        height="calc(100vh - 50px)"
-        backgroundColor="#a0a0a0a0"
-        top="0"
-        position="absolute"
-        zIndex="999"
-        justify="center"
-        align="center"
-        visibility={isLoading ? "visible" : "hidden"}
-      >
-        <CircularProgress isIndeterminate color="orange" />
-      </Stack>
+    <>
+      {isLoading && (
+        <Stack
+          width="100%"
+          height="100%"
+          backgroundColor="#a0a0a0a0"
+          top="0"
+          position="absolute"
+          zIndex="999"
+          justify="center"
+          align="center"
+        >
+          <Loading />
+        </Stack>
+      )}
       <Stack padding="2">
+        <Alert status="info">
+          <AlertIcon />
+          Parameter trigger dapat diabaikan dengan mencentangnya
+        </Alert>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -136,92 +170,192 @@ function Trigger() {
           }}
         >
           <FormControl id="soil" isRequired>
-            <FormLabel>Kelembaban Tanah (%)</FormLabel>
-            <NumberInput
-              defaultValue={0}
-              min={0}
-              max={100}
-              precision={2}
-              step={0.5}
-              value={soil}
-              onChange={(_, value) => setSoil(value)}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+            <HStack justify="space-between">
+              <FormLabel>Kelembaban Tanah (%)</FormLabel>
+              <Checkbox
+                colorScheme="orange"
+                paddingBottom="2"
+                isChecked={ignoreCheckbox[0]}
+                onChange={(e) => {
+                  let _ignore = [...ignoreCheckbox];
+                  _ignore[0] = e.target.checked;
+                  setIgnoreCheckbox(_ignore);
+                  setSoil(0);
+                }}
+              >
+                Abaikan
+              </Checkbox>
+            </HStack>
+            <InputGroup>
+              <InputLeftAddon children=">" />
+              <NumberInput
+                width="full"
+                defaultValue={0}
+                min={0}
+                max={100}
+                precision={2}
+                step={0.5}
+                value={soil}
+                onChange={(_, value) => setSoil(value)}
+                isDisabled={ignoreCheckbox[0]}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </InputGroup>
           </FormControl>
           <FormControl id="extenso" isRequired marginTop="2">
-            <FormLabel>Ekstensometer (cm)</FormLabel>
-            <NumberInput
-              defaultValue={0}
-              min={0}
-              precision={2}
-              step={0.5}
-              value={extenso}
-              onChange={(_, value) => setExtenso(value)}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+            <HStack justify="space-between">
+              <FormLabel>Ekstensometer (cm)</FormLabel>
+              <Checkbox
+                colorScheme="orange"
+                paddingBottom="2"
+                isChecked={ignoreCheckbox[1]}
+                onChange={(e) => {
+                  let _ignore = [...ignoreCheckbox];
+                  _ignore[1] = e.target.checked;
+                  setIgnoreCheckbox(_ignore);
+                  setExtenso(0);
+                }}
+              >
+                Abaikan
+              </Checkbox>
+            </HStack>
+            <InputGroup>
+              <InputLeftAddon children=">" />
+              <NumberInput
+                width="full"
+                defaultValue={0}
+                min={0}
+                precision={2}
+                step={0.5}
+                value={extenso}
+                onChange={(_, value) => setExtenso(value)}
+                isDisabled={ignoreCheckbox[1]}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </InputGroup>
           </FormControl>
           <FormControl id="waterlevel" isRequired marginTop="2">
-            <FormLabel>Water Level (cm)</FormLabel>
-            <NumberInput
-              defaultValue={0}
-              min={0}
-              precision={2}
-              step={0.5}
-              value={waterlevel}
-              onChange={(_, value) => setWaterlevel(value)}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+            <HStack justify="space-between">
+              <FormLabel>Water Level (cm)</FormLabel>
+              <Checkbox
+                colorScheme="orange"
+                paddingBottom="2"
+                isChecked={ignoreCheckbox[2]}
+                onChange={(e) => {
+                  let _ignore = [...ignoreCheckbox];
+                  _ignore[2] = e.target.checked;
+                  setIgnoreCheckbox(_ignore);
+                  setWaterlevel(999);
+                }}
+              >
+                Abaikan
+              </Checkbox>
+            </HStack>
+            <InputGroup>
+              <InputLeftAddon children="<" />
+              <NumberInput
+                width="full"
+                defaultValue={0}
+                min={0}
+                precision={2}
+                step={0.5}
+                value={waterlevel}
+                onChange={(_, value) => setWaterlevel(value)}
+                isDisabled={ignoreCheckbox[2]}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </InputGroup>
           </FormControl>
           <FormControl id="gyroX" isRequired marginTop="2">
-            <FormLabel>Gyroscope X (°)</FormLabel>
-            <NumberInput
-              min={-500}
-              max={500}
-              defaultValue={0}
-              precision={2}
-              step={0.5}
-              value={gyroX}
-              onChange={(_, value) => setGyroX(value)}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+            <HStack justify="space-between">
+              <FormLabel>Gyroscope X (°)</FormLabel>
+              <Checkbox
+                colorScheme="orange"
+                paddingBottom="2"
+                isChecked={ignoreCheckbox[3]}
+                onChange={(e) => {
+                  let _ignore = [...ignoreCheckbox];
+                  _ignore[3] = e.target.checked;
+                  setIgnoreCheckbox(_ignore);
+                  setGyroX(-500);
+                }}
+              >
+                Abaikan
+              </Checkbox>
+            </HStack>
+            <InputGroup>
+              <InputLeftAddon children=">" />
+              <NumberInput
+                width="full"
+                min={-500}
+                max={500}
+                defaultValue={0}
+                precision={2}
+                step={0.5}
+                value={gyroX}
+                onChange={(_, value) => setGyroX(value)}
+                isDisabled={ignoreCheckbox[3]}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </InputGroup>
           </FormControl>
           <FormControl id="gyroY" isRequired marginTop="2">
-            <FormLabel>Gyroscope Y (°)</FormLabel>
-            <NumberInput
-              min={-500}
-              max={500}
-              defaultValue={0.0}
-              precision={2}
-              step={0.5}
-              value={gyroY}
-              onChange={(_, value) => setGyroY(value)}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+            <HStack justify="space-between">
+              <FormLabel>Gyroscope Y (°)</FormLabel>
+              <Checkbox
+                colorScheme="orange"
+                paddingBottom="2"
+                isChecked={ignoreCheckbox[4]}
+                onChange={(e) => {
+                  let _ignore = [...ignoreCheckbox];
+                  _ignore[4] = e.target.checked;
+                  setIgnoreCheckbox(_ignore);
+                  setGyroY(-500);
+                }}
+              >
+                Abaikan
+              </Checkbox>
+            </HStack>
+            <InputGroup>
+              <InputLeftAddon children=">" />
+              <NumberInput
+                width="full"
+                min={-500}
+                max={500}
+                defaultValue={0.0}
+                precision={2}
+                step={0.5}
+                value={gyroY}
+                onChange={(_, value) => setGyroY(value)}
+                isDisabled={ignoreCheckbox[4]}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </InputGroup>
           </FormControl>
           <FormControl id="time" isRequired marginTop="2">
             <FormLabel>Waktu Alarm Aktif (detik)</FormLabel>
@@ -254,7 +388,8 @@ function Trigger() {
           </FormControl>
           <Button
             type="submit"
-            marginTop="8"
+            marginTop="5"
+            marginBottom="2"
             colorScheme="orange"
             isLoading={isLoading}
             width="100%"
@@ -264,7 +399,7 @@ function Trigger() {
           </Button>
         </form>
       </Stack>
-    </Stack>
+    </>
   );
 }
 
