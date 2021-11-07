@@ -90,7 +90,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
  * 2. week
  * 3. month
  * 4. year
- * 5. *empty* (all data)
+ * 5. all
+ * 6. *empty* (last 1000 data)
  */
 Route::get('/data/{time?}', function ($time = '') {
     global $query;
@@ -148,7 +149,8 @@ Route::get('/data/{time?}', function ($time = '') {
  * 2. week
  * 3. month
  * 4. year
- * 5. *empty* (last 1000 data)
+ * 5. all
+ * 6. *empty* (last 1000 data)
  */
 Route::get('/data4graph/{time?}', function ($time = '') {
     global $query;
