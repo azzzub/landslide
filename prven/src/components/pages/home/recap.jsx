@@ -8,7 +8,7 @@ function Recap({ data, isLoading }) {
     <VStack padding="2" alignItems="start" marginBottom="1">
       <HStack width="100%" justifyContent="space-between">
         <Text fontSize="small">
-          Data terakhir diperbarui pada: <b>{data?.created_at || "..."}</b>
+          Data diperbarui pada: <b>{data?.created_at || "..."}</b>
         </Text>
         <CircularProgress
           isIndeterminate
@@ -21,6 +21,7 @@ function Recap({ data, isLoading }) {
         <Widget title="Kelembaban Tanah" value={data?.soil_str || "..."} />
         <Widget title="Ekstensometer" value={data?.extenso_str || "..."} />
       </HStack>
+      <Widget title="Water Level" value={data?.waterlevel_str || "..."} />
       <Widget title="Gyroscope" value={data?.gyro_str || "..."} />
     </VStack>
   );

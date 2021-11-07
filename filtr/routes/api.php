@@ -45,6 +45,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
             'extenso' => 'required|numeric',
             'gyro_x' => 'required|numeric',
             'gyro_y' => 'required|numeric',
+            'waterlevel' => 'required|numeric',
             'time' => 'required|numeric',
             'active' => 'required|boolean',
         ]);
@@ -90,9 +91,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
  * 2. week
  * 3. month
  * 4. year
- * 5. *empty* (all data)
+ * 5. all
+ * 6. *empty* (last 1000 data)
  */
-Route::get('/data/{time?}', function ($time = 'year') {
+Route::get('/data/{time?}', function ($time = '') {
     global $query;
     switch ($time) {
         case 'day':
@@ -111,8 +113,12 @@ Route::get('/data/{time?}', function ($time = 'year') {
             $query = "SELECT * FROM sensor WHERE created_at >= NOW() - INTERVAL 1 YEAR ORDER BY id ASC";
             break;
 
-        default:
+        case 'all':
             $query = "SELECT * FROM sensor ORDER BY id ASC";
+            break;
+
+        default:
+            $query = "SELECT * FROM ( SELECT * FROM sensor ORDER BY id DESC LIMIT 1000 ) sub ORDER BY id ASC";
             break;
     }
 
@@ -136,7 +142,7 @@ Route::get('/data/{time?}', function ($time = 'year') {
 });
 
 /**
- * GET - /data[/time]
+ * GET - /data4graph[/time]
  * Getting the sensor data based on the time
  * 
  * Time:
@@ -144,9 +150,10 @@ Route::get('/data/{time?}', function ($time = 'year') {
  * 2. week
  * 3. month
  * 4. year
- * 5. *empty* (all data)
+ * 5. all
+ * 6. *empty* (last 1000 data)
  */
-Route::get('/data4graph/{time?}', function ($time = 'year') {
+Route::get('/data4graph/{time?}', function ($time = '') {
     global $query;
     switch ($time) {
         case 'day':
@@ -165,8 +172,12 @@ Route::get('/data4graph/{time?}', function ($time = 'year') {
             $query = "SELECT * FROM sensor WHERE created_at >= NOW() - INTERVAL 1 YEAR ORDER BY id ASC";
             break;
 
-        default:
+        case 'all':
             $query = "SELECT * FROM sensor ORDER BY id ASC";
+            break;
+
+        default:
+            $query = "SELECT * FROM ( SELECT * FROM sensor ORDER BY id DESC LIMIT 1000 ) sub ORDER BY id ASC";
             break;
     }
 

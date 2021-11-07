@@ -12,6 +12,7 @@ function Graph() {
   const toast = useToast();
   const [graphData, setGraphData] = useState(null);
   const [filterActive, setFilterActive] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const filter = [
     { sub: "/day", title: "Hari" },
@@ -21,12 +22,15 @@ function Graph() {
   ];
 
   async function fetchGraphData(sub = "") {
+    setIsLoading(true);
     try {
       const response = await axios.get(endpoint(`/data4graph${sub}`), {
         timeout: 5000,
       });
       setGraphData(response.data);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       toast({
         position: "bottom",
         status: "error",
@@ -38,7 +42,7 @@ function Graph() {
 
   useInterval(() => {
     fetchGraphData(filterActive);
-  }, 60000);
+  }, 30000);
 
   useEffect(() => {
     fetchGraphData(filterActive);
@@ -50,6 +54,7 @@ function Graph() {
       <HStack paddingBottom="1">
         {filter.map((e) => (
           <Button
+            isLoading={e.sub === filterActive && isLoading}
             w="100%"
             key={e.sub}
             colorScheme={e.sub === filterActive ? "orange" : "gray"}
@@ -70,6 +75,11 @@ function Graph() {
         title="Ekstensometer"
         suffix=" cm"
         data1={graphData?.extenso || []}
+      />
+      <Chart
+        title="Water Level"
+        suffix=" cm"
+        data1={graphData?.waterlevel || []}
       />
       <Chart
         title="Gyroscope"
